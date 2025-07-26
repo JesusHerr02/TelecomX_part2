@@ -1,7 +1,54 @@
 # TelecomX: análisis de evaluación parte 2.
+---
+
+### Predicción de Churn (Cancelación de Clientes)
+
+---
+
+## Propósito del análisis
+El objetivo central de este proyecto es **predecir la probabilidad de que un cliente cancele sus servicios de telecomunicaciones (churn)**.  
+Con este modelo la empresa podrá:
+- Identificar segmentos de alto riesgo y actuar **antes** de que el cliente abandone.  
+- Optimizar campañas de retención y aumentar el **Lifetime Value (LTV)**.  
+- Reducir costos de adquisición al disminuir la rotación.
+
+---
 
 
+---
 
+## 🔧 Proceso de preparación de datos
+
+### 1️⃣ Columnas y tipos
+| **Variable**        | **Tipo**   | **Descripción** (ejemplo) |
+|---------------------|------------|---------------------------|
+| `customerID`        | ID         | Identificador único |
+| `Churn`             | Binaria    | 0 = No canceló, 1 = Canceló |
+| `gender`            | Categórica | Male / Female |
+| `SeniorCitizen`     | Numérica   | 0 o 1 |
+| `Partner`, `Dependents`, `PhoneService`, etc. | Categóricas | Sí/No |
+| `Charges_Monthly`   | Numérica   | Cargo mensual en USD |
+| `Cuentas_Diarias`   | Numérica   | Cargo promedio diario |
+
+### 2️⃣ Codificación / normalización
+- **Categóricas binarias**: Sí/No → 1/0  
+- **Categóricas ordinales**:  
+  - *Contract*: `Month-to-month=0`, `One year=1`, `Two year=2`  
+  - *PaymentMethod*: `Mailed check=0`, `Electronic=1`, `Credit card=2`, `Bank transfer=3`  
+- **Numéricas**: se mantienen en escala original (no se escalaron porque LightGBM es insensible a la escala).
+
+### 3️⃣ División de datos
+```python
+X = df_final.drop(columns=['customerID', 'Churn'])
+y = df_final['Churn']
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)
+```
+---
+## Resultados
 ---
 
 Evaluación de los modelos
